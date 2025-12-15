@@ -155,9 +155,9 @@ normalized_data = (pro_exp_cos_dis - min_value) / (max_value - min_value)
 max = np.max(normalized_data, axis=1)
 pre_ = np.argmax(normalized_data, axis=1)
 
-# np.savetxt('./cpv/test_pro_exp_cos_dis_0.3_norm',normalized_data,fmt='%.4f',delimiter=",")
-# np.savetxt('./cpv/test_pro_exp_cos_dis_0.3_norm_max',max,fmt='%.4f',delimiter=",")
-# np.savetxt('./cpv/test_pro_exp_cos_dis_0.3_norm_pre',pre_,fmt='%d',delimiter=",")
+np.savetxt('./cpv/test_pro_exp_cos_dis_0.3_norm',normalized_data,fmt='%.4f',delimiter=",")
+np.savetxt('./cpv/test_pro_exp_cos_dis_0.3_norm_max',max,fmt='%.4f',delimiter=",")
+np.savetxt('./cpv/test_pro_exp_cos_dis_0.3_norm_pre',pre_,fmt='%d',delimiter=",")
 
 result = normalized_data * vis_conf * p_a
 

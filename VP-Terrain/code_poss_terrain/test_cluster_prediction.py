@@ -160,7 +160,8 @@ def fit(model, train_loader, test_loader):
         # 聚类得到最终预测结果
 
         # 使用kmeans聚类
-        kmeans = KMeans(n_clusters=7, init=init_centers)  
+        #kmeans = KMeans(n_clusters=7, init=init_centers) 
+        kmeans = KMeans(n_clusters=7, init='k-means++', random_state=0) 
         labels = kmeans.fit_predict(train_features)
         print("Using KMeans")
         # 使用层次聚类

@@ -1,12 +1,12 @@
 # 定义了项目所需要用到的参数
 class config():
-    train_filename = "../data/poss-terrain/train_7_normal.hdf5"
+    train_filename = "D:\桌面\智能机器人概论期末大作业\PKU-Intelligent-Robot-Course-Lab\VP-Terrain\data\_train_7_new.hdf5"
     # valid_filename = "../data/poss-terrain/test_7_normal.hdf5"
-    valid_filename = "../data/poss-terrain/dark_7_final.hdf5"
+    valid_filename = "D:\桌面\智能机器人概论期末大作业\PKU-Intelligent-Robot-Course-Lab\VP-Terrain\data\_dark_7_new.hdf5"
 
     timestep = 100  # 时间步长
-    pro_batch_size = 1280  # 机体数据训练批次
-    vision_batch_size = 128 # 视觉数据训练批次
+    pro_batch_size = 256  # 机体数据训练批次
+    vision_batch_size = 32 # 视觉数据训练批次
     feature_size = 9  # 每个步长对应的特征数量
     out_channels = 64  # 卷积输出通道
     output_size = 1  # 最终输出层大小为1
@@ -30,4 +30,4 @@ class config():
     best_all_pre = 0.0
 
     pro_cuda_device = 0
-    vision_cuda_device = 1
+    vision_cuda_device = 0

@@ -21,12 +21,15 @@ from losses import SupConLoss
 from tqdm import tqdm 
 
 #加载参数
+#config = config()
+#if not os.path.exists(config.save_folder):
+    #os.mkdir(config.save_folder)
 config = config()
 if not os.path.exists(config.save_folder):
-    os.mkdir(config.save_folder)
+    os.makedirs(config.save_folder, exist_ok=True)  # 使用 makedirs
 
 os.environ["CUDA_VISIBLE_DEVICES"] = str(config.pro_cuda_device) # 设置使用的GPU
-print(torch.cuda.get_device_name(0)) # 查看使用的设备名称
+print(torch.cuda.get_device_name(0)) # 查看使用的设备名称KKKKKKKKKK
 print(torch.cuda.is_available())
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
