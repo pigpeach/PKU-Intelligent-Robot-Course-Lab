@@ -180,12 +180,12 @@ def fit(epoch, model, loss_s, optimizer, train_loader, test_loader):
         running_loss += loss.item() #一个epochs里的每次的batchs的loss加起来
         train_bar.desc = "train epoch[{}/{}] loss:{:.3f}".format(epoch + 1, config.pro_epochs, loss)
 
-    # 检查train_feature中是否有nan
+# 检查train_feature中是否有nan
     for i in range(len(train_feature)):
         if np.isnan(train_feature[i]).any():
             print("nan in train_feature")
             break
-    
+        
     # a = 1/0
 
     # if epoch % 20 == 0:

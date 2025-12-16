@@ -155,9 +155,9 @@ normalized_data = (pro_exp_cos_dis - min_value) / (max_value - min_value)
 max = np.max(normalized_data, axis=1)
 pre_ = np.argmax(normalized_data, axis=1)
 
-np.savetxt('./cpv/test_pro_exp_cos_dis_0.3_norm',normalized_data,fmt='%.4f',delimiter=",")
-np.savetxt('./cpv/test_pro_exp_cos_dis_0.3_norm_max',max,fmt='%.4f',delimiter=",")
-np.savetxt('./cpv/test_pro_exp_cos_dis_0.3_norm_pre',pre_,fmt='%d',delimiter=",")
+#np.savetxt('./cpv/test_pro_exp_cos_dis_0.3_norm',normalized_data,fmt='%.4f',delimiter=",")
+#np.savetxt('./cpv/test_pro_exp_cos_dis_0.3_norm_max',max,fmt='%.4f',delimiter=",")
+#np.savetxt('./cpv/test_pro_exp_cos_dis_0.3_norm_pre',pre_,fmt='%d',delimiter=",")
 
 result = normalized_data * vis_conf * p_a
 
@@ -165,11 +165,11 @@ a = np.argmax(result, axis=1)
 
 fusion_acc = np.sum(a == test_labels) / len(test_labels) * 100.
 
-print('Fusion Acc: %.3f' % (fusion_acc))
+print('Fusion Acc: %.5f' % (fusion_acc))
 
 end_time = time.time()
 total_time = (end_time - start_time) * 1000
-print('Fusion Time: %.2f ms' % (total_time))
+print('Fusion Time: %.3f ms' % (total_time))
 average_time = total_time / len(test_labels)
 print('Fusion Average Time: %.2f ms' % (average_time))
 
