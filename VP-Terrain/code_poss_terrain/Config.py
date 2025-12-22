@@ -18,7 +18,7 @@ class config():
     # ablation study
     vision_backbone = 'mobilenet' # 'mobilenet' or 'resnet' or 'vit'
 
-    alpha = 1 #标签率
+    alpha = 0.05 #标签率
     
 
 

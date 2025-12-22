@@ -135,37 +135,58 @@ with torch.no_grad():
     np.savetxt(config.save_folder + 'vision_dark_prediction',prediction, fmt='%d',delimiter=",") 
 
 
-# 用于计算最终基于贝叶斯决策融合的分类结果
-pro_conf = np.loadtxt(config.save_folder + 'pro_dark_conf',delimiter=",")
-vis_conf = np.loadtxt(config.save_folder + 'vision_dark_conf',delimiter=",")
-
-start_time = time.time()
+# ============================================================
+# 方法1: 原始贝叶斯融合（保留）
+# ============================================================
+pro_conf = np.loadtxt(config.save_folder + 'pro_dark_conf', delimiter=",")
+vis_conf = np.loadtxt(config.save_folder + 'vision_dark_conf', delimiter=",")
 
 p_a = np.array([[1, 1, 1, 1, 1, 1, 1]])
 p_a = p_a / 7
 
-pro_exp_cos_dis = np.exp(pro_conf/0.3)
-
-# 计算最小值和最大值
+pro_exp_cos_dis = np.exp(pro_conf / 0.3)
 min_value = np.min(pro_exp_cos_dis)
 max_value = np.max(pro_exp_cos_dis)
-
-# 归一化到 (0, 1) 之间
 normalized_data = (pro_exp_cos_dis - min_value) / (max_value - min_value)
-max = np.max(normalized_data, axis=1)
-pre_ = np.argmax(normalized_data, axis=1)
-
-#np.savetxt('./cpv/test_pro_exp_cos_dis_0.3_norm',normalized_data,fmt='%.4f',delimiter=",")
-#np.savetxt('./cpv/test_pro_exp_cos_dis_0.3_norm_max',max,fmt='%.4f',delimiter=",")
-#np.savetxt('./cpv/test_pro_exp_cos_dis_0.3_norm_pre',pre_,fmt='%d',delimiter=",")
 
 result = normalized_data * vis_conf * p_a
-
 a = np.argmax(result, axis=1)
-
 fusion_acc = np.sum(a == test_labels) / len(test_labels) * 100.
+print('Bayes Fusion Acc: %.2f%%' % (fusion_acc))
 
-print('Fusion Acc: %.5f' % (fusion_acc))
+# ============================================================
+# 方法2: TMC 证据融合（新增）
+# ============================================================
+from evidence_fusion import TMCFusion
+
+tmc = TMCFusion(num_classes=7)
+
+# 将置信度转换为证据
+pro_evidence = tmc.confidence_to_evidence(pro_conf, conf_type='cosine', temperature=0.3)
+vis_evidence = tmc.confidence_to_evidence(vis_conf, conf_type='softmax', temperature=1.0)
+
+# 转换为主观意见
+pro_belief, pro_uncertainty = tmc.evidence_to_opinion(pro_evidence)
+vis_belief, vis_uncertainty = tmc.evidence_to_opinion(vis_evidence)
+
+# DS 组合融合
+fused_belief, fused_uncertainty = tmc.ds_combine(
+    pro_belief, pro_uncertainty,
+    vis_belief, vis_uncertainty
+)
+
+# 预测
+tmc_pred = np.argmax(fused_belief, axis=1)
+tmc_acc = np.sum(tmc_pred == test_labels) / len(test_labels) * 100.
+
+print('TMC Fusion Acc: %.2f%%' % (tmc_acc))
+print('平均不确定性: %.4f' % (fused_uncertainty.mean()))
+
+# 可信决策分析
+confident_mask = (fused_uncertainty < 0.3)
+if confident_mask.sum() > 0:
+    confident_acc = np.sum(tmc_pred[confident_mask] == test_labels[confident_mask]) / confident_mask.sum() * 100.
+    print('高置信样本准确率 (u<0.3): %.2f%% (%d/%d)' % (confident_acc, confident_mask.sum(), len(test_labels)))
 
 end_time = time.time()
 total_time = (end_time - start_time) * 1000
